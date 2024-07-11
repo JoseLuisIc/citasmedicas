@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Nueva Cita Médica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            width: 50%;
+            margin: auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>Crear Nueva Cita Médica</h1>
+
+<form th:action="@{/save}" th:object="${appointment}" method="post">
+    <div class="form-group">
+        <label for="surgery">Consultorio:</label>
+        <select id="surgery" name="surgery" th:field="*{surgery.id}">
+            <option th:each="surgery : ${surgeries}" th:value="${surgery.id}" th:text="${'Piso ' + surgery.floor + ' - ' + surgery.name}"></option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="doctor">Doctor:</label>
+        <select id="doctor" name="doctor" th:field="*{doctor}">
+            <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.name}"></option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="time">Horario de Consulta:</label>
+        <select id="time" name="time" th:field="*{time}">
+            <option th:each="hour : ${#numbers.sequence(9, 18)}" th:value="${hour+ ':00'}" th:text="${hour + ':00'}"></option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="patient">Nombre del Paciente:</label>
+        <input type="text" id="patient" name="patient" th:field="*{patient}" placeholder="Nombre del Paciente">
+    </div>
+
+    <div th:if="${param.successMessage}">
+        <div class="alert alert-success">
+            <p th:text="${param.successMessage}"></p>
+        </div>
+    </div>
+
+    <div th:if="${#fields.hasErrors()}">
+        <div class="alert alert-danger">
+            <p>Se encontraron errores al procesar el formulario:</p>
+            <ul>
+                <li th:each="error : ${#fields.errors()}" th:text="${error}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit">Guardar Cita</button>
+        <a class="add-link" href="/">Regresar</a>
+    </div>
+
+</form>
+
+</body>
+</html>
